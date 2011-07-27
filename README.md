@@ -7,12 +7,12 @@ _Thanks!_
 ===============
 
 
-hd3. Week 1
+hd3 Week 1
 -----------------
 Example of frame animation code
 
 
-hd3. Week 2
+hd3.	Week 2
 -----------------
 First example of external class
 
