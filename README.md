@@ -7,15 +7,15 @@ _Thanks!_
 ===============
 
 
-hd3 Week 1
+Week 1
 -----------------
 Example of frame animation code
 
 
-hd3.	Week 2
+Week 2
 -----------------
 First example of external class
 
-hd3. Week 3
+Week 3
 -----------------
 Cat: example of external class using inheritence and getters and setters
