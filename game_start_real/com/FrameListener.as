@@ -4,7 +4,7 @@
 	import flash.display.FrameLabel;
 	
 	/**
-	 * Enables calling a function when arriving at a speicific frame
+	 * Enables calling a function when arriving at a specific frame
 	 * @author Brent Allen - Riser
 	 * @copy Riser 2011
 	 */
