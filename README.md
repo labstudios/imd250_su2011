@@ -19,3 +19,13 @@ First example of external class
 Week 3
 -----------------
 Cat: example of external class using inheritence and getters and setters
+
+
+game_start_real
+-----------------
+This folder contains the start point for game development
+
+
+breakout
+-----------------
+The Breakout demo project
