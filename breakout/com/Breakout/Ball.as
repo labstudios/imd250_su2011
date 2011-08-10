@@ -3,7 +3,7 @@ package com.Breakout
 	import flash.display.Sprite;
 	import com.Breakout.Game;
 	
-	public class Ball extends Sprite
+	public class Ball extends GameObject
 	{
 		private var vx:Number = -3;
 		private var vy:Number = -3;
@@ -48,44 +48,13 @@ package com.Breakout
 			
 		}
 		
-		public function get top():Number
+		public function hitBottom(bottom:Number):void
 		{
-			return this.y - (this.height / 2);
-		}
-		
-		public function set top(n:Number):void
-		{
-			this.y = n + (this.height / 2);
-		}
-		
-		public function get bottom():Number
-		{
-			return this.y + (this.height / 2);
-		}
-		
-		public function set bottom(n:Number):void
-		{
-			this.y = n - (this.height / 2);
-		}
-		
-		public function get left():Number
-		{
-			return this.x - (this.width / 2);
-		}
-		
-		public function set left(n:Number):void
-		{
-			this.x = n + (this.width / 2);
-		}
-		
-		public function get right():Number
-		{
-			return this.x + (this.width / 2);
-		}
-		
-		public function set right(n:Number):void
-		{
-			this.x = n - (this.width / 2);
+			this.bottom = bottom;
+			if (vy > 0)
+			{
+				vy *= -1;
+			}
 		}
 		
 		//--------------------------------------
@@ -108,6 +77,16 @@ package com.Breakout
 		public function get nextRight():Number
 		{
 			return this.x + (this.width / 2) + vx;
+		}
+		
+		public function get nextX():Number
+		{
+			return this.x + vx;
+		}
+		
+		public function get nextY():Number
+		{
+			return this.y + vy;
 		}
 	}
 }
