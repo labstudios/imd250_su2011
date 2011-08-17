@@ -17,6 +17,14 @@ package com.Breakout
 				this.hitTestPoint(Game.game.ball.nextX, Game.game.ball.nextBottom, true))
 			{
 				Game.game.ball.hitBottom(this.top);
+				if (Game.game.ball.nextX < this.x - (width * .2))
+				{
+					Game.game.ball.hitRight();
+				}
+				if (Game.game.ball.nextX > this.x + (width * .2))
+				{
+					Game.game.ball.hitLeft();
+				}
 			}
 		}
 		

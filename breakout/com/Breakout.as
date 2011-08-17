@@ -28,7 +28,7 @@ package com
 			{
 				lives = int(balls_txt.text);
 				scoreMult = MAX_MULT - lives;
-				scoreMult = scoreMult > MIN_MULT ? MIN_MULT:scoreMult;
+				scoreMult = scoreMult < MIN_MULT ? MIN_MULT:scoreMult;
 				super.gotoGame();
 			}
 			else
@@ -49,6 +49,16 @@ package com
 			{
 				balls_txt.text = "";
 			}
+		}
+		
+		public function get startingLives():int
+		{
+			return this.lives;
+		}
+		
+		public function get scoreMultiplier():Number
+		{
+			return this.scoreMult;
 		}
 	}
 }

@@ -5,42 +5,49 @@ package com.Breakout
 	
 	public class Ball extends GameObject
 	{
+		private static const BAD_DEFAULT:Number = -9999999;
 		private var vx:Number = -3;
 		private var vy:Number = -3;
+		private var forceX:Boolean = false;
+		private var forceY:Boolean = false;
+		private var startX:Number;
+		private var startY:Number;
 		
 		public function Ball():void
 		{
-			
+			this.startX = this.x;
+			this.startY = this.y;
+			this.speed = 4;
+		}
+		
+		public function reset():void
+		{
+			this.forceX = false;
+			this.forceY = false;
 		}
 		
 		public function run(e:* = null):void
 		{
-			var forceX:Boolean = false;
-			var forceY:Boolean = false;
-			
 			if (this.nextLeft < Game.LEFT_WALL)
 			{
-				this.left = Game.LEFT_WALL;
-				forceX = true;
-				this.vx *= -1;
+				this.hitLeft(Game.LEFT_WALL);
 			}
 			if (this.nextTop < Game.TOP_WALL)
 			{
-				this.top = Game.TOP_WALL;
-				forceY = true;
-				this.vy *= -1;
+				this.hitTop(Game.TOP_WALL);
 			}
 			if (this.nextRight > Game.RIGHT_WALL)
 			{
-				this.right = Game.RIGHT_WALL;
-				forceX = true;
-				this.vx *= -1;
+				this.hitRight(Game.RIGHT_WALL);
 			}
 			if (this.top > Game.BOTTOM)
 			{
-				forceX = true;
-				forceY = true;
+				this.forceX = true;
+				this.forceY = true;
+				Game.game.died();
 			}
+			
+			this.checkBricks();
 			
 			forceX ? null:this.x += vx;
 			forceY ? null:this.y += vy;
@@ -48,12 +55,96 @@ package com.Breakout
 			
 		}
 		
-		public function hitBottom(bottom:Number):void
+		private function checkBricks():void
 		{
-			this.bottom = bottom;
+			for (var i:int = 0; i < Game.game.blocks.length;++i)
+			{
+				var block:Brick = Game.game.blocks[i];
+				if (this.nextBottom > block.top ||
+					this.nextTop < block.bottom ||
+					this.nextY < block.bottom ||
+					this.nextY > block.top)
+				{
+					if (block.hitTestPoint(this.nextX, this.nextTop, true))
+					{
+						this.hitTop(block.bottom);
+						block.hit();
+					}
+					else if (block.hitTestPoint(this.nextRight, this.nextY, true))
+					{
+						this.hitRight(block.left);
+						block.hit();
+					}
+					else if (block.hitTestPoint(this.nextX, this.nextBottom, true))
+					{
+						this.hitBottom(block.top);
+						block.hit();
+					}
+					else if (block.hitTestPoint(this.nextLeft, this.nextY, true))
+					{
+						this.hitLeft(block.right);
+						block.hit();
+					}
+				}
+			}
+		}
+		
+		public function newBall():void
+		{
+			this.x = this.startX;
+			this.y = this.startY;
+			this.speed = this.speed;
+		}
+		
+		public function hitBottom(b:Number = BAD_DEFAULT):void
+		{
+			if (b != BAD_DEFAULT)
+			{
+				this.bottom = b;
+				this.forceY = true;
+			}
 			if (vy > 0)
 			{
 				vy *= -1;
+			}
+		}
+		
+		public function hitTop(t:Number = BAD_DEFAULT):void
+		{
+			if (t != BAD_DEFAULT)
+			{
+				this.top = t;
+				this.forceY = true;
+			}
+			if (vy < 0)
+			{
+				vy *= -1;
+			}
+		}
+		
+		public function hitLeft(l:Number = BAD_DEFAULT):void
+		{
+			if (l != BAD_DEFAULT)
+			{
+				this.left = l;
+				this.forceX = true;
+			}
+			if (vx < 0)
+			{
+				vx *= -1;
+			}
+		}
+		
+		public function hitRight(r:Number = BAD_DEFAULT):void
+		{
+			if (r != BAD_DEFAULT)
+			{
+				this.right = r;
+				this.forceX = true;
+			}
+			if (vx > 0)
+			{
+				vx *= -1;
 			}
 		}
 		
@@ -87,6 +178,17 @@ package com.Breakout
 		public function get nextY():Number
 		{
 			return this.y + vy;
+		}
+		
+		public function set speed(n:Number):void
+		{
+			this.vx = -n;
+			this.vy = -n;
+		}
+		
+		public function get speed():Number
+		{
+			return Math.abs(this.vx);
 		}
 	}
 }
