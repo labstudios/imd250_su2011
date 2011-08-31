@@ -58,7 +58,7 @@ package com.Asteroids
 			
 			super.run();
 			
-			/*for (var i:int = 0; i < Asteroids.game.rocks.length;++i)
+			for (var i:int = 0; i < Asteroids.game.rocks.length;++i)
 			{
 				if (this.hitTestObject(Asteroids.game.rocks[i]))
 				{
@@ -66,7 +66,7 @@ package com.Asteroids
 					this.visible = false;
 					break;
 				}
-			}*/
+			}
 			
 		}
 		
