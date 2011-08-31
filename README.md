@@ -29,3 +29,8 @@ This folder contains the start point for game development
 breakout
 -----------------
 The Breakout demo project
+
+
+Asteroids
+-----------------
+The Asteroids demo project
