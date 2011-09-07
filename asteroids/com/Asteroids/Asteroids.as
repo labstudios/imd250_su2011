@@ -1,9 +1,11 @@
 package com.Asteroids
 {
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
+	import com.Asteroids.Game;
 	
 	public class Asteroids extends Sprite
 	{
@@ -12,12 +14,16 @@ package com.Asteroids
 		public static const RIGHT:Number = 400;
 		public static const BOTTOM:Number = 400;
 		public static const DEAD_FOR:int = 50;
+		public static const EXTRA_LIFE:int = 1500;
+		public static const TELEPORTS_PER_LIFE:int = 3;
 		private static var instance:Asteroids;
 		
 		private var _bullets:Vector.<Bullet> = new Vector.<Bullet>();
 		private var _rocks:Vector.<Rock> = new Vector.<Rock>();
 		private var numRocks:int = 3;
 		private var resDelay:int = DEAD_FOR;
+		private var extraLife:int = 0;
+		private var teleport:Boolean = true;
 		
 		public function Asteroids():void
 		{
@@ -28,6 +34,7 @@ package com.Asteroids
 			this.focusRect = false;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, added);
+			this.addEventListener(Event.REMOVED_FROM_STAGE, killMe);
 		}
 		
 		private function added(e:* = null):void
@@ -36,6 +43,7 @@ package com.Asteroids
 			this.lives = 3;
 			this.level = 1;
 			this.score = 0;
+			this.teleports = TELEPORTS_PER_LIFE;
 			this.startLevel();
 		}
 		
@@ -71,11 +79,17 @@ package com.Asteroids
 					ship.y = BOTTOM / 2;
 					ship.visible = true;
 					ship.speed = 0;
+					ship.invincible = true;
+					this.teleports = TELEPORTS_PER_LIFE;
 				}
 				else
 				{
 					this.resDelay--;
 				}
+			}
+			else
+			{
+				Game.game.itsOver();
 			}
 		}
 		
@@ -138,6 +152,46 @@ package com.Asteroids
 			}
 		}
 		
+		override public function addChild(child:DisplayObject):DisplayObject
+		{
+			if (child is Rock)
+			{
+				return this.asteroidsContainer.addChild(child);
+			}
+			else if (child is Bullet)
+			{
+				return this.bulletsContainer.addChild(child);
+			}
+			else
+			{
+				return super.addChild(child);
+			}
+		}
+		
+		override public function removeChild(child:DisplayObject):DisplayObject
+		{
+			if (child is Rock)
+			{
+				return this.asteroidsContainer.removeChild(child);
+			}
+			else if (child is Bullet)
+			{
+				return this.bulletsContainer.removeChild(child);
+			}
+			else
+			{
+				return super.removeChild(child);
+			}
+		}
+		
+		public function killMe(e:* = null):void
+		{
+			this.removeEventListener(Event.ENTER_FRAME, run);
+			this.removeEventListener(KeyboardEvent.KEY_DOWN, keyDown);
+			this.removeEventListener(KeyboardEvent.KEY_UP, keyUp);
+			this.removeEventListener(Event.REMOVED_FROM_STAGE, killMe);
+		}
+		
 		public static function get game():Asteroids
 		{
 			return instance;
@@ -158,6 +212,16 @@ package com.Asteroids
 			return this['ship_mc'] as Ship;
 		}
 		
+		public function get asteroidsContainer():Sprite
+		{
+			return this['asteroids_mc'] as Sprite;
+		}
+		
+		public function get bulletsContainer():Sprite
+		{
+			return this['bullets_mc'] as Sprite;
+		}
+		
 		public function set up(b:Boolean):void
 		{
 			ship.up = b;
@@ -165,7 +229,17 @@ package com.Asteroids
 		
 		public function set down(b:Boolean):void
 		{
-			ship.down = b;
+			if (this.teleports > 0 && this.teleport)
+			{
+				this.teleport = false;
+				ship.down = b;
+				this.teleports--;
+			}
+			else
+			{
+				ship.down = false;
+				this.teleport = true;
+			}
 		}
 		
 		public function set left(b:Boolean):void
@@ -203,6 +277,16 @@ package com.Asteroids
 			level_txt.text = n.toString();
 		}
 		
+		public function get teleports():int
+		{
+			return int(teleports_txt.text);
+		}
+		
+		public function set teleports(n:int):void
+		{
+			teleports_txt.text = n.toString();
+		}
+		
 		public function get score():int
 		{
 			return int(score_txt.text);
@@ -210,6 +294,12 @@ package com.Asteroids
 		
 		public function set score(n:int):void
 		{
+			this.extraLife += n - this.score;
+			while (this.extraLife > EXTRA_LIFE)
+			{
+				this.lives++;
+				this.extraLife -= EXTRA_LIFE;
+			}
 			score_txt.text = n.toString();
 		}
 		
