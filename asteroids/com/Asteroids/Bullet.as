@@ -18,6 +18,7 @@ package com.Asteroids
 			this.speed = SPEED;
 			
 			Asteroids.game.addChild(this);
+			this.playShot();
 		}
 		
 		override public function run():void

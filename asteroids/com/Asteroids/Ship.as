@@ -1,5 +1,6 @@
 package com.Asteroids
 {
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import com.greensock.TweenMax;
 	
@@ -21,7 +22,7 @@ package com.Asteroids
 		
 		public function Ship():void
 		{
-			
+			this.flames.visible = false;
 		}
 		
 		override public function run():void
@@ -49,6 +50,7 @@ package com.Asteroids
 				this.speed = 0;
 				this.x = Math.random() * Asteroids.RIGHT;
 				this.y = Math.random() * Asteroids.BOTTOM;
+				this.playTeleport();
 			}
 			if (this._space)
 			{
@@ -71,9 +73,17 @@ package com.Asteroids
 			{
 				if (this.hitTestObject(Asteroids.game.rocks[i]))
 				{
-					Asteroids.game.rocks[i].hitRock(i);
-					this.killShip();
-					break;
+					if (this.flames.visible &&
+						this.flames.hitTestObject(Asteroids.game.rocks[i]))
+					{
+						Asteroids.game.rocks[i].hitRock(i);
+					}
+					else
+					{
+						Asteroids.game.rocks[i].hitRock(i);
+						this.killShip();
+						break;
+					}
 				}
 			}
 			
@@ -95,6 +105,7 @@ package com.Asteroids
 		public function set up(b:Boolean):void
 		{
 			this._up = b;
+			this.flames.visible = b;
 		}
 		
 		public function set down(b:Boolean):void
@@ -129,6 +140,11 @@ package com.Asteroids
 		public function get invincible():Boolean
 		{
 			return this._invincible;
+		}
+		
+		public function get flames():MovieClip
+		{
+			return this['flames_mc'] as MovieClip;
 		}
 	}
 }

@@ -34,9 +34,10 @@ package com.Asteroids
 		public function hitRock(index:int, givePoints:Boolean = false):void
 		{
 			var newRock:Rock;
+			Explosions.create(this.x, this.y);
 			Asteroids.game.rocks.splice(index, 1);
 			Asteroids.game.removeChild(this);
-			
+			this.playExplosion();
 			if (this is LargeRock)
 			{
 				Asteroids.game.score += givePoints ? 15:0;
